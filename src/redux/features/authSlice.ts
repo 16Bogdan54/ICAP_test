@@ -4,14 +4,11 @@ import toast from "react-hot-toast";
 
 const HOST = process.env.NEXT_PUBLIC_SERVER_HOST;
 
-export const login = createAsyncThunk<LoginInput>(
+export const login = createAsyncThunk<Response, LoginInput>(
   "auth/login",
-  async ({ username, password }, thunkAPI) => {
+  async (loginInput, thunkAPI) => {
     try {
-      const res = await axios.post(`${HOST}/api/login/`, {
-        username,
-        password,
-      });
+      const res = await axios.post(`${HOST}/api/login/`, loginInput);
       return res.data;
     } catch (e) {
       toast.error(e.message);
