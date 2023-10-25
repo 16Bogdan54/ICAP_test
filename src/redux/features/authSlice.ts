@@ -29,7 +29,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state, action) => {
+    logout: (state) => {
       state.username = "";
       state.isLoggedIn = false;
       state.isLoading = false;
