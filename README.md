@@ -1,6 +1,6 @@
 # Тестове завдання [ICAP]([https://link-url-here.org](https://icapgroupgmbh.com/ua)https://icapgroupgmbh.com/ua)
 
-Технології: 
+## Технології: 
 
 - Next.js
 - Redux
