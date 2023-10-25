@@ -1,13 +1,62 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+const HOST = process.env.NEXT_PUBLIC_SERVER_HOST;
+
+export const login = createAsyncThunk<LoginInput>(
+  "auth/login",
+  async ({ username, password }, thunkAPI) => {
+    try {
+      const res = await axios.post(`${HOST}/api/login/`, {
+        username,
+        password,
+      });
+      return res.data;
+    } catch (e) {
+      toast.error(e.message);
+
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
 
 const initialState = {
-  value: {
-    isAuth: false,
-  } as AuthState,
-} as InitialState;
+  isLoggedIn: false,
+  isLoading: false,
+  error: "",
+  username: "",
+} as AuthInitialState;
 
-export const auth = createSlice({
+export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state, action) => {
+      state.username = "";
+      state.isLoggedIn = false;
+      state.isLoading = false;
+      state.error = "";
+    },
+  },
+  extraReducers: (builder) =>
+    builder
+      .addCase(login.fulfilled, (state, action) => {
+        state.username = action.meta.arg.username;
+        state.isLoggedIn = true;
+        state.isLoading = false;
+        state.error = "";
+      })
+      .addCase(login.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = false;
+
+        state.error = action.error.message;
+      }),
 });
+
+export const authReducer = authSlice.reducer;
+export const { logout } = authSlice.actions;
