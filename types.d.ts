@@ -1,7 +1,7 @@
 type AuthInitialState = {
   isLoggedIn: boolean;
   isLoading: boolean;
-  error: string;
+  error: string | undefined;
   username: string;
 };
 
@@ -21,6 +21,6 @@ type TableItem = {
 
 type TableInitialState = {
   isLoading: boolean;
-  error: string;
+  error: string | undefined;
   posts: TableItem[];
 };

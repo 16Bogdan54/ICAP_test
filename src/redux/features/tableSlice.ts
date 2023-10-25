@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import toast from "react-hot-toast";
-import { authSlice } from "@/redux/features/authSlice";
+import AxiosError from "axios";
 
 const HOST = process.env.NEXT_PUBLIC_SERVER_HOST;
 
@@ -13,9 +12,10 @@ export const fetchTableData = createAsyncThunk(
 
       return res.data.results;
     } catch (e) {
-      toast.error(e.message);
+      if (e instanceof AxiosError || e instanceof Error)
+        return thunkAPI.rejectWithValue(e);
 
-      return thunkAPI.rejectWithValue(e.message);
+      return thunkAPI.rejectWithValue("Something went wrong");
     }
   }
 );

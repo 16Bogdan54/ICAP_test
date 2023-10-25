@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import toast from "react-hot-toast";
+import AxiosError from "axios";
 
 const HOST = process.env.NEXT_PUBLIC_SERVER_HOST;
 
@@ -11,9 +11,10 @@ export const login = createAsyncThunk<Response, LoginInput>(
       const res = await axios.post(`${HOST}/api/login/`, loginInput);
       return res.data;
     } catch (e) {
-      toast.error(e.message);
+      if (e instanceof AxiosError || e instanceof Error)
+        return thunkAPI.rejectWithValue(e);
 
-      return thunkAPI.rejectWithValue(e.message);
+      return thunkAPI.rejectWithValue("Something went wrong");
     }
   }
 );
